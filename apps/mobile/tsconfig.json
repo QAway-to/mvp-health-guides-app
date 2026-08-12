@@ -2,6 +2,14 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    // Сборка контента запускается напрямую Node'ом, а его ESM-загрузчик
+    // требует расширение в пути импорта.
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    // Без явного списка @types/node не подхватывается: customConditions
+    // "react-native" из базового конфига Expo не даёт его автоподключить,
+    // и сборка контента остаётся без типов node:fs и node:test.
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
     }

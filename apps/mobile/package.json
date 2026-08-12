@@ -28,6 +28,7 @@
     "react-native-url-polyfill": "^4.0.0"
   },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "@types/react": "~19.2.2",
     "typescript": "~6.0.3"
   },
@@ -40,8 +41,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "build:guides": "node --experimental-strip-types tools/build-guides.ts",
-    "test": "node --experimental-strip-types --test tools/*.test.ts"
+    "build:guides": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tools/build-guides.ts",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tools/build-guides.test.ts"
   },
   "private": true
 }
