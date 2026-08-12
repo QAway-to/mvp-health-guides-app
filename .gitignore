@@ -1,0 +1,19 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+.DS_Store
+
+# Локальные секреты. Ключи Supabase, RevenueCat и Telegram сюда, в git — никогда.
+.env
+.env.local
+*.env.local
+
+# Нативные проекты генерируются prebuild
+/apps/mobile/ios/
+/apps/mobile/android/
+
+# Дампы инструментов: в них попадают живые токены из URL запросов
+*.tool-result.json
+debug-dump*.json
