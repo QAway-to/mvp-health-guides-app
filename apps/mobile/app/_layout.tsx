@@ -4,6 +4,7 @@ import {
   Inter_600SemiBold,
 } from '@expo-google-fonts/inter';
 import { Oswald_500Medium, Oswald_600SemiBold } from '@expo-google-fonts/oswald';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,6 +12,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { SessionProvider } from '@/features/auth/session';
+import { PERSIST_MAX_AGE, queryClient, queryPersister } from '@/lib/queryClient';
 import { ThemeProvider, useTheme } from '@/theme/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -39,11 +42,18 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <ThemedStack />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: queryPersister, maxAge: PERSIST_MAX_AGE }}
+    >
+      <SessionProvider>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <ThemedStack />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </SessionProvider>
+    </PersistQueryClientProvider>
   );
 }
 
@@ -62,6 +72,7 @@ function ThemedStack() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
       </Stack>
     </>
   );
