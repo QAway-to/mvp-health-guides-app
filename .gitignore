@@ -17,3 +17,6 @@ web-build/
 # Дампы инструментов: в них попадают живые токены из URL запросов
 *.tool-result.json
 debug-dump*.json
+
+# Локальный Supabase CLI пишет сюда состояние веток
+supabase/.branches/

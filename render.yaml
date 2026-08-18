@@ -1,0 +1,23 @@
+# Web-версия приложения (Expo → React Native Web) как статический сайт.
+# Нативные сборки (iOS/Android) сюда не относятся — они собираются через EAS.
+services:
+  - type: web
+    name: health-federation-web
+    runtime: static
+    rootDir: apps/mobile
+    buildCommand: npm ci && npm run build:web
+    staticPublishPath: ./dist
+    envVars:
+      # Значения задаются в дашборде Render: они инлайнятся в бандл на этапе
+      # сборки, поэтому попадают в код страницы. Для anon-ключа это штатно —
+      # доступ к данным режет RLS. Сервис-ключ здесь недопустим.
+      - key: EXPO_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: EXPO_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+    routes:
+      # web.output = single: весь роутинг живёт на клиенте, поэтому любой путь
+      # отдаёт index.html, иначе перезагрузка на /guide/<slug> даст 404.
+      - type: rewrite
+        source: /*
+        destination: /index.html
