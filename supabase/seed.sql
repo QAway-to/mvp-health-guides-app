@@ -28,6 +28,9 @@ insert into public.categories (slug, title, subtitle, order_index) values ('long
 insert into public.categories (slug, title, subtitle, order_index) values ('safety', 'Безопасность', 'Травмы и противопоказания', 7)
   on conflict (slug) do update set
     title = excluded.title, subtitle = excluded.subtitle, order_index = excluded.order_index;
+insert into public.categories (slug, title, subtitle, order_index) values ('habit', 'Привычка', 'Порог, срывы и возвращение', 8)
+  on conflict (slug) do update set
+    title = excluded.title, subtitle = excluded.subtitle, order_index = excluded.order_index;
 
 -- Гайды ---------------------------------------------------------------
 insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
@@ -247,6 +250,24 @@ select 'style-power-walk', c.id, 'Быстрая ходьба и скоробе�
     tags = excluded.tags, contraindications = excluded.contraindications,
     order_index = excluded.order_index, published = excluded.published;
 insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'one-run-assembly', c.id, 'Одна пробежка целиком', 'Как соединить техники, дыхание и завершение в единый выход.', 'premium', 'regular',
+       25, array['дыхание', 'обувь', 'техника']::text[], null, 5, true
+  from public.categories c where c.slug = 'styles'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'first-week', c.id, 'Первая неделя', 'Не начинайте с техники и километров. Начните с пяти минут — и повторите семь дней.', 'free', 'beginner',
+       5, array['начало', 'обувь', 'роса', 'техника', 'травмы']::text[], null, 4, true
+  from public.categories c where c.slug = 'start'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
 select 'run-before-cold', c.id, 'Бег перед закаливанием', 'Зачем разогревать тело до холодной воды.', 'premium', 'regular',
        6, array['дыхание', 'закаливание']::text[], 'Работа с холодом. При обострении хронических заболеваний сначала проконсультируйтесь с врачом.', 0, true
   from public.categories c where c.slug = 'hardening'
@@ -258,6 +279,24 @@ select 'run-before-cold', c.id, 'Бег перед закаливанием', '�
 insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
 select 'after-snow', c.id, 'После снега: как согреться', 'Правило 5–10 секунд, которое отделяет закаливание от переохлаждения.', 'premium', 'regular',
        4, array['закаливание', 'обувь', 'снег', 'травмы']::text[], null, 1, true
+  from public.categories c where c.slug = 'hardening'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'cold-entry-order', c.id, 'Порядок входа в холод', 'Пять шагов от разогрева до согревания и почему страх здесь союзник.', 'premium', 'regular',
+       8, array['дыхание', 'закаливание']::text[], 'Не входите в холод в одиночку и на пределе. При обострении хронических заболеваний сначала врач.', 2, true
+  from public.categories c where c.slug = 'hardening'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'winter-running', c.id, 'Бег зимой', 'Правило тёплого тела, дыхание на морозе и главная ошибка — после пробежки.', 'premium', 'regular',
+       6, array['дыхание', 'закаливание', 'начало', 'обувь', 'снег', 'травмы']::text[], null, 3, true
   from public.categories c where c.slug = 'hardening'
   on conflict (slug) do update set
     category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
@@ -295,6 +334,51 @@ insert into public.guides (slug, category_id, title, summary, tier, level, durat
 select 'when-not-to-run', c.id, 'Когда лучше не бежать', 'Дни, когда прогулка полезнее пробежки.', 'free', 'beginner',
        4, array['начало', 'травмы']::text[], 'При острых болях в суставах и позвоночнике, после недавних операций и при обострении хронических заболеваний сначала врач — потом бег.', 1, true
   from public.categories c where c.slug = 'safety'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'progression-and-volume', c.id, 'Сколько добавлять', 'Почему объём растёт медленнее, чем хочется, и что ломается при спешке.', 'premium', 'beginner',
+       5, array['роса', 'травмы']::text[], null, 2, true
+  from public.categories c where c.slug = 'safety'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'pain-is-a-signal', c.id, 'Боль — это сигнал', 'Что делать, когда заболело колено, и почему через боль бежать нельзя.', 'free', 'beginner',
+       4, array['обувь', 'техника', 'травмы']::text[], 'При острых болях в суставах и позвоночнике, после недавних операций и при обострении хронических заболеваний сначала врач — потом бег.', 3, true
+  from public.categories c where c.slug = 'safety'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'motivation-threshold', c.id, 'Порог: как выйти, когда не хочется', 'Самая трудная часть пробежки — дверь. Что с этим делать в тяжёлый день.', 'free', 'beginner',
+       5, array['начало', 'роса']::text[], null, 0, true
+  from public.categories c where c.slug = 'habit'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'after-a-break', c.id, 'Возвращение после перерыва', 'Сорвались и бросили — как начать заново и не застрять на том же месте.', 'free', 'beginner',
+       5, array['начало', 'травмы']::text[], null, 1, true
+  from public.categories c where c.slug = 'habit'
+  on conflict (slug) do update set
+    category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
+    tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
+    tags = excluded.tags, contraindications = excluded.contraindications,
+    order_index = excluded.order_index, published = excluded.published;
+insert into public.guides (slug, category_id, title, summary, tier, level, duration_min, tags, contraindications, order_index, published)
+select 'sleep-and-recovery', c.id, 'Сон и восстановление', 'Что происходит между пробежками и почему отдых — часть практики.', 'premium', 'beginner',
+       5, array['долголетие']::text[], null, 2, true
+  from public.categories c where c.slug = 'habit'
   on conflict (slug) do update set
     category_id = excluded.category_id, title = excluded.title, summary = excluded.summary,
     tier = excluded.tier, level = excluded.level, duration_min = excluded.duration_min,
@@ -677,6 +761,38 @@ select g.id, 3, 'Два-три подхода', 'Двух-трёх подход�
        '[]'::jsonb, 'ВИДЫ БЕГА'
   from public.guides g where g.slug = 'style-power-walk';
 insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Вход: полной стопой', 'Начните с бега полной стопой — 100–500 метров. Вибрации будят тело, и по его отклику видно, на что вы готовы сегодня.', 240,
+       '[]'::jsonb, 'ВИДЫ БЕГА'
+  from public.guides g where g.slug = 'one-run-assembly';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Основа: спокойный бег', 'Дальше 1,5–2 километра в темпе разговора. Это около 1000 вдохов — ровно столько нужно для насыщения организма кислородом.', 900,
+       '[]'::jsonb, 'ГЛАВНАЯ КОНЦЕПЦИЯ — БЕЖАТЬ ЧТОБЫ ДЫШАТЬ'
+  from public.guides g where g.slug = 'one-run-assembly';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Середина: техники', 'В середине — подушки на 100–200 метров и пальцы на 50–100 метров. Меняйте стиль раньше, чем забьются мышцы.', 300,
+       '[]'::jsonb, 'ВИДЫ БЕГА'
+  from public.guides g where g.slug = 'one-run-assembly';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 3, 'Выход: скоробег', 'Завершите быстрой ходьбой: раскачивайте таз, ускорьтесь на 30–50 метров, подержите скорость и замедлитесь. Два-три подхода.', 180,
+       '[]'::jsonb, 'ВИДЫ БЕГА'
+  from public.guides g where g.slug = 'one-run-assembly';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 4, 'И только потом растяжка', 'Растяжку делайте после скоробега, на горячем теле: так она проходит мягче и безопаснее.', 180,
+       '[]'::jsonb, 'РАЗМИНКА'
+  from public.guides g where g.slug = 'one-run-assembly';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Пять минут по траве', 'Начните не с техники и не с километров, а с пяти минут босиком по траве. Повторите это семь дней подряд — остальное встанет на место само.', 300,
+       '[]'::jsonb, 'ПОВЕРХНОСТИ — ДОЗИРОВКА'
+  from public.guides g where g.slug = 'first-week';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Каждый день важнее длины', 'Пять минут ежедневно дают телу больше, чем час раз в неделю. Регулярность здесь важнее объёма.', null,
+       '[]'::jsonb, 'ПРОГРЕССИЯ И ОБЪЁМ'
+  from public.guides g where g.slug = 'first-week';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Если появилась боль', 'Появилась боль или дискомфорт — вернитесь на шаг назад и задержитесь там на неделю. Стопа, которая десятилетиями жила в обуви, не станет сильной за одну пробежку.', null,
+       '[]'::jsonb, 'БЕГ ЧЕРЕЗ БОЛЬ'
+  from public.guides g where g.slug = 'first-week';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
 select g.id, 0, 'Сначала разогрев', 'Перед закаливанием бегут ради одного — разогреть тело до контакта с холодной водой.', 300,
        '[]'::jsonb, 'ВИДЫ БЕГА ПО ЦЕЛЯМ'
   from public.guides g where g.slug = 'run-before-cold';
@@ -700,6 +816,38 @@ insert into public.guide_steps (guide_id, order_index, title, body, duration_sec
 select g.id, 2, 'Сколько снега достаточно', 'Пяти-тридцати секунд на снегу хватает и детям, и взрослым. Больше не нужно.', null,
        '[]'::jsonb, 'БЕГ БОСИКОМ'
   from public.guides g where g.slug = 'after-snow';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Разогрейтесь', 'Сначала пробежка до устойчивого тепла и лёгкой испарины. Холод принимает только разогретое тело.', 600,
+       '[]'::jsonb, 'ЗАКАЛИВАНИЕ — ПОРЯДОК ДЕЙСТВИЙ'
+  from public.guides g where g.slug = 'cold-entry-order';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Выровняйте дыхание', 'Дыхание спокойное, без задержек и накачки. Входите в холод на выдохе и без прыжка.', null,
+       '[]'::jsonb, 'ЗАКАЛИВАНИЕ — ПОРЯДОК ДЕЙСТВИЙ'
+  from public.guides g where g.slug = 'cold-entry-order';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Выходите раньше', 'Выходите раньше, чем захочется выйти. Согревайтесь движением, а не горячей водой.', null,
+       '[]'::jsonb, 'ЗАКАЛИВАНИЕ — ПОРЯДОК ДЕЙСТВИЙ'
+  from public.guides g where g.slug = 'cold-entry-order';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 3, 'Страх — датчик, а не слабость', 'Тревога перед холодом означает, что ресурса пока мало. Не ломайте сигнал волей: разогрейтесь дольше, сократите время, вернитесь завтра.', null,
+       '[]'::jsonb, 'ЗАКАЛИВАНИЕ — ПОРЯДОК ДЕЙСТВИЙ'
+  from public.guides g where g.slug = 'cold-entry-order';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Только на разогретое тело', 'Снимать обувь зимой можно только на разогретое тело и только в движении. Стоять босиком на снегу — не закаливание, пробежать по нему несколько секунд — да.', null,
+       '[]'::jsonb, 'БЕГ ЗИМОЙ'
+  from public.guides g where g.slug = 'winter-running';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Первый раз — пять секунд', 'Первый выход по снегу — 5 секунд, не больше. Снег чистый и ровный, без наста и льда. Рядом сухое полотенце и тёплые носки.', 5,
+       '["Тело разогрето","Снег чистый","Полотенце и носки рядом"]'::jsonb, 'БЕГ ЗИМОЙ'
+  from public.guides g where g.slug = 'winter-running';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Дыхание на морозе', 'Ртом на холоде не дышат: вдох носом, воздух успевает согреться. Если носом не хватает — темп слишком высокий для этой погоды.', null,
+       '[]'::jsonb, 'БЕГ ЗИМОЙ'
+  from public.guides g where g.slug = 'winter-running';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 3, 'Главное — после', 'Выходите слегка мёрзнущим: через пять минут бега станет тепло. После пробежки сразу переоденьтесь в сухое — основное переохлаждение случается не на бегу, а после него.', null,
+       '[]'::jsonb, 'БЕГ ЗИМОЙ'
+  from public.guides g where g.slug = 'winter-running';
 insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
 select g.id, 0, 'Бег для долголетия', 'Он нужен 80% людей: и спортсменам после карьеры, и обычным людям любого возраста.', null,
        '[]'::jsonb, 'ДВА ВИДА БЕГА'
@@ -760,71 +908,139 @@ insert into public.guide_steps (guide_id, order_index, title, body, duration_sec
 select g.id, 3, 'Вес и суставы', 'При лишнем весе от 50 кг нагрузка ложится на суставы, колени и сосуды — начинать нужно осторожнее.', null,
        '[]'::jsonb, 'ВРЕД БЕГА'
   from public.guides g where g.slug = 'when-not-to-run';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Мышцы и сухожилия растут по-разному', 'Мышцы крепнут за недели, а сухожилия и суставы — за месяцы. Резкий рост объёма травмирует именно их, поэтому добавлять нужно понемногу.', null,
+       '[]'::jsonb, 'ПРОГРЕССИЯ И ОБЪЁМ'
+  from public.guides g where g.slug = 'progression-and-volume';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Ошибка первой недели', 'Самая частая ошибка — слишком много и сразу. Лучше меньше, но каждый день: регулярность даёт больше, чем один тяжёлый выход.', null,
+       '[]'::jsonb, 'ПРОГРЕССИЯ И ОБЪЁМ'
+  from public.guides g where g.slug = 'progression-and-volume';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Как понять, что перебрали', 'Опустошение после пробежки вместо заряда означает лишнюю нагрузку. Сократите объём и вернитесь к прежнему на следующий день.', null,
+       '[]'::jsonb, 'ПРОГРЕССИЯ И ОБЪЁМ'
+  from public.guides g where g.slug = 'progression-and-volume';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Боль не терпят', 'Боль — это не то, что нужно перетерпеть. Это сообщение. Тот, кто бежит сквозь неё, лечится потом гораздо дольше, чем отдыхал бы сейчас.', null,
+       '[]'::jsonb, 'БЕГ ЧЕРЕЗ БОЛЬ'
+  from public.guides g where g.slug = 'pain-is-a-signal';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Шаг назад', 'Появилась боль — сократите объём, вернитесь на шаг назад и задержитесь там. Это не отставание, а единственный способ не потерять недели.', null,
+       '[]'::jsonb, 'БЕГ ЧЕРЕЗ БОЛЬ'
+  from public.guides g where g.slug = 'pain-is-a-signal';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Проверьте причины', 'Чаще всего дело в одном из шести: бег у дороги, неправильная техника, нагрузки без отдыха, неподходящая обувь, слабые мышцы, лишний вес.', null,
+       '["Поверхность и место","Техника","Отдых","Обувь"]'::jsonb, 'ТРАВМЫ — ПРИЧИНЫ'
+  from public.guides g where g.slug = 'pain-is-a-signal';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Уменьшите обещание', 'В тяжёлый день не обещайте себе пробежку. Пообещайте выйти за дверь и пройти сто метров. Дальше тело обычно решает само.', null,
+       '[]'::jsonb, 'МОТИВАЦИЯ, ЛЕНЬ И СРЫВЫ'
+  from public.guides g where g.slug = 'motivation-threshold';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Это договор с собой', 'Каждый раз, когда вы вышли, хотя не хотелось, вы доказываете себе: ваше слово чего-то стоит. Уверенность собирается не из побед, а из выполненных обещаний самому себе.', null,
+       '[]'::jsonb, 'МОТИВАЦИЯ, ЛЕНЬ И СРЫВЫ'
+  from public.guides g where g.slug = 'motivation-threshold';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Своя территория', 'В жизни многое от нас не зависит. Но выйти утром и пробежать свой круг — зависит всегда. Это маленькая территория, где решаете вы, и она держит в трудные времена.', null,
+       '[]'::jsonb, 'МОТИВАЦИЯ, ЛЕНЬ И СРЫВЫ'
+  from public.guides g where g.slug = 'motivation-threshold';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 3, 'Чего ждать от пробежки', 'Бег не убирает проблемы. Он меняет того, кто на них смотрит. После пробежки проблемы те же, но силы смотреть на них снова есть.', null,
+       '[]'::jsonb, 'МОТИВАЦИЯ, ЛЕНЬ И СРЫВЫ'
+  from public.guides g where g.slug = 'motivation-threshold';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Начните с посильного', 'Возвращайтесь с того объёма, который точно осилите, а не с того, на котором остановились. Иначе первая же пробежка повторит ту причину, по которой вы бросили.', null,
+       '[]'::jsonb, 'МОТИВАЦИЯ, ЛЕНЬ И СРЫВЫ'
+  from public.guides g where g.slug = 'after-a-break';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Первый раз — снова 500 метров', 'После долгого перерыва действует то же правило, что и на старте: 500 метров, потом километр, потом два. Сразу с пяти километров начинать нельзя.', null,
+       '[]'::jsonb, 'КАК НАЧИНАТЬ'
+  from public.guides g where g.slug = 'after-a-break';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Возвращаться назад — нормально', 'Если появилась боль или тяжесть, вернитесь на шаг назад и задержитесь там. Это не отставание: тело, которое отвыкло, не станет прежним за одну пробежку.', null,
+       '[]'::jsonb, 'БЕГ ЧЕРЕЗ БОЛЬ'
+  from public.guides g where g.slug = 'after-a-break';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 0, 'Ремонт идёт ночью', 'Тело, которое двигалось днём, глубоко спит ночью. Именно во сне идёт основной ремонт и обновление организма — движение днём и сон ночью связаны напрямую.', null,
+       '[]'::jsonb, 'СОН И ВОССТАНОВЛЕНИЕ'
+  from public.guides g where g.slug = 'sleep-and-recovery';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 1, 'Восстановление — это не нагрузка', 'Между пробежками восстанавливают сон и лёгкие дни, а не дополнительные тренировки. Геройство здесь работает против вас.', null,
+       '[]'::jsonb, 'СОН И ВОССТАНОВЛЕНИЕ'
+  from public.guides g where g.slug = 'sleep-and-recovery';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 2, 'Признак лишнего', 'Если после пробежки чувствуете опустошение, а не заряд, — нагрузка была лишней. Перегруз ведёт к потере энергии: это минус, а не плюс.', null,
+       '[]'::jsonb, 'ПРОГРЕССИЯ И ОБЪЁМ'
+  from public.guides g where g.slug = 'sleep-and-recovery';
+insert into public.guide_steps (guide_id, order_index, title, body, duration_sec, checklist, source)
+select g.id, 3, 'Профилактика вместо лечения', 'Проще каждый день делать простые вещи, чем потом годами восстанавливаться. Ежедневная практика — это профилактика, а не скорая помощь.', null,
+       '[]'::jsonb, 'СОН И ВОССТАНОВЛЕНИЕ'
+  from public.guides g where g.slug = 'sleep-and-recovery';
 
 -- Программа -----------------------------------------------------------
 insert into public.program_days (week, day, guide_id, note)
-select 1, 1, g.id, 'Начинаем с 500 метров. Больше сегодня не нужно.'
-  from public.guides g where g.slug = 'first-run-500m'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 1, 2, g.id, null
-  from public.guides g where g.slug = 'run-to-breathe'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 1, 3, g.id, null
-  from public.guides g where g.slug = 'choose-shoes'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 1, 4, g.id, null
-  from public.guides g where g.slug = 'warmup'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 1, 5, g.id, null
-  from public.guides g where g.slug = 'choose-pace'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 1, 6, g.id, null
+select 1, 1, g.id, 'Сначала причина, потом километры.'
   from public.guides g where g.slug = 'why-barefoot'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 1, 7, g.id, 'Итог недели: два выхода в день становятся привычкой.'
-  from public.guides g where g.slug = 'when-to-run'
+select 1, 2, g.id, null
+  from public.guides g where g.slug = 'when-not-to-run'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 2, 1, g.id, null
+select 1, 3, g.id, null
   from public.guides g where g.slug = 'prepare-route'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 2, 2, g.id, null
+select 1, 4, g.id, null
+  from public.guides g where g.slug = 'choose-shoes'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 1, 5, g.id, 'Ровно 500 метров. Больше сегодня не нужно.'
+  from public.guides g where g.slug = 'first-run-500m'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 1, 6, g.id, null
+  from public.guides g where g.slug = 'warmup'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 1, 7, g.id, 'Итог недели: семь дней подряд важнее длины пробежки.'
+  from public.guides g where g.slug = 'first-week'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 2, 1, g.id, null
   from public.guides g where g.slug = 'barefoot-dew'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 2, 3, g.id, null
-  from public.guides g where g.slug = 'breathing-progression'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 2, 4, g.id, null
-  from public.guides g where g.slug = 'style-heel-toe'
-  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
-insert into public.program_days (week, day, guide_id, note)
-select 2, 5, g.id, null
+select 2, 2, g.id, null
   from public.guides g where g.slug = 'barefoot-pebbles'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 2, 6, g.id, null
-  from public.guides g where g.slug = 'style-forefoot'
+select 2, 3, g.id, null
+  from public.guides g where g.slug = 'barefoot-shells'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 2, 7, g.id, 'Разбираем, что делать с болью в боку.'
-  from public.guides g where g.slug = 'side-stitch'
+select 2, 4, g.id, null
+  from public.guides g where g.slug = 'barefoot-water'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 2, 5, g.id, null
+  from public.guides g where g.slug = 'barefoot-sand'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 2, 6, g.id, null
+  from public.guides g where g.slug = 'where-to-run'
+  on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
+insert into public.program_days (week, day, guide_id, note)
+select 2, 7, g.id, 'Итог недели: добавляем понемногу, а не рывком.'
+  from public.guides g where g.slug = 'progression-and-volume'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 1, g.id, null
-  from public.guides g where g.slug = 'style-flat-foot'
+  from public.guides g where g.slug = 'run-to-breathe'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 2, g.id, null
-  from public.guides g where g.slug = 'barefoot-water'
+  from public.guides g where g.slug = 'breathing-progression'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 3, g.id, null
@@ -832,47 +1048,47 @@ select 3, 3, g.id, null
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 4, g.id, null
-  from public.guides g where g.slug = 'style-toes'
+  from public.guides g where g.slug = 'side-stitch'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 5, g.id, null
-  from public.guides g where g.slug = 'barefoot-sand'
+  from public.guides g where g.slug = 'when-to-run'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 3, 6, g.id, null
-  from public.guides g where g.slug = 'where-to-run'
+  from public.guides g where g.slug = 'daily-norm'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 3, 7, g.id, 'Учимся завершать пробежку правильно.'
-  from public.guides g where g.slug = 'style-power-walk'
+select 3, 7, g.id, 'Итог недели: отдых — часть практики, а не пауза в ней.'
+  from public.guides g where g.slug = 'sleep-and-recovery'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 4, 1, g.id, null
-  from public.guides g where g.slug = 'run-before-cold'
+  from public.guides g where g.slug = 'style-flat-foot'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 4, 2, g.id, null
-  from public.guides g where g.slug = 'barefoot-snow'
+  from public.guides g where g.slug = 'style-forefoot'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 4, 3, g.id, null
-  from public.guides g where g.slug = 'after-snow'
+  from public.guides g where g.slug = 'style-toes'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 4, 4, g.id, null
-  from public.guides g where g.slug = 'run-in-rain'
+  from public.guides g where g.slug = 'style-heel-toe'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
 select 4, 5, g.id, null
-  from public.guides g where g.slug = 'barefoot-shells'
+  from public.guides g where g.slug = 'style-power-walk'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 4, 6, g.id, null
-  from public.guides g where g.slug = 'two-kinds-of-running'
+select 4, 6, g.id, 'Собираем всё в одну пробежку от начала до конца.'
+  from public.guides g where g.slug = 'one-run-assembly'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 insert into public.program_days (week, day, guide_id, note)
-select 4, 7, g.id, 'Курс закончился — норма остаётся с вами.'
-  from public.guides g where g.slug = 'daily-norm'
+select 4, 7, g.id, 'Курс закончился. Дальше всё решает порог у двери.'
+  from public.guides g where g.slug = 'motivation-threshold'
   on conflict (week, day) do update set guide_id = excluded.guide_id, note = excluded.note;
 
 -- Тренер ---------------------------------------------------------------
