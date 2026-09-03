@@ -7,7 +7,6 @@
     "scheme": "fedzdorovya",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.qaway.healthfederation",
@@ -37,7 +36,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#ffffff",
-          "dark": { "backgroundColor": "#111111" },
+          "dark": {
+            "backgroundColor": "#111111"
+          },
           "resizeMode": "contain",
           "image": "./assets/splash-icon.png"
         }
