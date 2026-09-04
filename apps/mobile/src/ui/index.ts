@@ -1,6 +1,7 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { EmptyState } from './EmptyState';
+export { Field } from './Field';
 export { Pill } from './Pill';
 export { ProgressBar } from './ProgressBar';
 export { Screen } from './Screen';

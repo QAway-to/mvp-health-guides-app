@@ -30,29 +30,28 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Сегодня',
-          tabBarIcon: ({ color, size }) => <Ionicons name="today-outline" color={color} size={size} />,
+          title: 'Лента',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="layers-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="guides"
+        name="matches"
         options={{
-          title: 'Гайды',
-          tabBarIcon: ({ color, size }) => <Ionicons name="book-outline" color={color} size={size} />,
-        }}
-      />
-      <Tabs.Screen
-        name="trainer"
-        options={{
-          title: 'Тренер',
-          tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" color={color} size={size} />,
+          title: 'Совпадения',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="git-compare-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Профиль',
-          tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} />,
+          title: 'Моя карточка',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color={color} size={size} />
+          ),
         }}
       />
     </Tabs>

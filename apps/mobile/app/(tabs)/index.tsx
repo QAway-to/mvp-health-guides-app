@@ -1,108 +1,97 @@
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { useHasPremium } from '@/features/guides/hooks';
-import { useToday } from '@/features/program/useToday';
+import { CardTile } from '@/features/cards/CardTile';
+import { findMatches } from '@/features/cards/matching';
+import { useCards } from '@/features/cards/store';
 import { useTheme } from '@/theme/theme';
-import { SPACING } from '@/theme/tokens';
-import { Button, Card, EmptyState, Pill, ProgressBar, Screen, SectionHeader, Text } from '@/ui';
+import { RADIUS, SPACING } from '@/theme/tokens';
+import { EmptyState, Screen, SectionHeader, Text } from '@/ui';
 
-export default function TodayScreen() {
+export default function FeedScreen() {
   const router = useRouter();
   const { colors } = useTheme();
-  const today = useToday();
-  const premium = useHasPremium();
+  const { myCard, cards } = useCards();
+  const [onlyMatches, setOnlyMatches] = useState(false);
 
-  if (today.isPending) {
-    return (
-      <Screen scroll={false} style={{ justifyContent: 'center' }}>
-        <ActivityIndicator color={colors.ink} />
-      </Screen>
-    );
-  }
+  const matches = useMemo(() => findMatches(myCard, cards), [myCard, cards]);
 
-  if (today.isError) {
-    return (
-      <Screen>
-        <SectionHeader title="Сегодня" />
-        <EmptyState
-          title="Программа не загрузилась"
-          description="Проверьте соединение — план появится, как только связь вернётся."
-        />
-      </Screen>
-    );
-  }
+  const byId = useMemo(
+    () => new Map(matches.map((match) => [match.card.id, match])),
+    [matches],
+  );
 
-  if (!today.today) {
-    return (
-      <Screen>
-        <SectionHeader title="Готово" subtitle="Программа пройдена целиком" />
-        <Card>
-          <Text variant="headingMd">Норма остаётся с вами</Text>
-          <Text variant="body" tone="muted">
-            1,5–2 км утром и вечером. Возвращайтесь к любому гайду, когда захотите освежить технику.
-          </Text>
-          <Button
-            label="Открыть гайды"
-            fullWidth
-            style={{ marginTop: SPACING.sm }}
-            onPress={() => router.push('/guides')}
-          />
-        </Card>
-      </Screen>
-    );
-  }
-
-  const { day, guide } = today.today;
-  const isLocked = guide.tier === 'premium' && premium.data !== true;
+  // Совпавшие сверху, в порядке силы совпадения; остальные — как лежат.
+  // Лента без такой сортировки заставляет искать глазами то, ради чего
+  // человек её открыл.
+  const ordered = useMemo(() => {
+    const matched = matches.map((match) => match.card);
+    const rest = cards.filter((card) => !byId.has(card.id));
+    return onlyMatches ? matched : [...matched, ...rest];
+  }, [matches, cards, byId, onlyMatches]);
 
   return (
     <Screen>
       <SectionHeader
-        title="Сегодня"
-        subtitle={`Неделя ${day.week}, день ${day.day} — ${today.week.done} из ${today.week.total} закрыто`}
+        title="Лента"
+        subtitle={`${cards.length} карточек · совпадений ${matches.length}`}
       />
 
-      <View style={{ gap: SPACING.xl }}>
-        <View style={{ gap: SPACING.sm }}>
-          <ProgressBar value={today.week.done / today.week.total} label="Прогресс недели" />
-          <Text variant="captionSm" tone="muted" uppercase>
-            Всего пройдено {today.completedTotal} из {today.programLength}
+      <View style={styles.filter}>
+        <Pressable
+          accessibilityRole="switch"
+          accessibilityState={{ checked: onlyMatches }}
+          accessibilityLabel="Показывать только совпадения"
+          onPress={() => setOnlyMatches((value) => !value)}
+          style={[
+            styles.toggle,
+            {
+              backgroundColor: onlyMatches ? colors.ink : colors.surface,
+              borderColor: onlyMatches ? colors.ink : colors.hairline,
+            },
+          ]}
+        >
+          <Text variant="captionSm" tone={onlyMatches ? 'onInk' : 'secondary'} uppercase>
+            Только совпадения
           </Text>
-        </View>
-
-        <Card>
-          <Text variant="captionSm" tone="muted" uppercase>
-            Практика дня
-          </Text>
-          <Text variant="headingLg">{guide.title}</Text>
-          <Text variant="body" tone="muted">
-            {day.note ?? guide.summary}
-          </Text>
-
-          <View style={{ flexDirection: 'row', gap: SPACING.sm, marginTop: SPACING.xs }}>
-            <Pill label={`${guide.duration_min} мин`} />
-            {isLocked ? <Pill label="по подписке" tone="accent" /> : null}
-          </View>
-
-          <Button
-            label={isLocked ? 'Что входит в подписку' : 'Начать'}
-            size="lg"
-            fullWidth
-            style={{ marginTop: SPACING.md }}
-            onPress={() =>
-              isLocked ? router.push('/paywall') : router.push(`/session/${guide.slug}`)
-            }
-          />
-        </Card>
-
-        <Button
-          label="Открыть гайд целиком"
-          variant="outline"
-          fullWidth
-          onPress={() => router.push(`/guide/${guide.slug}`)}
-        />
+        </Pressable>
       </View>
+
+      {ordered.length === 0 ? (
+        <EmptyState
+          title="Совпадений пока нет"
+          description="Добавьте требования и предложения в свою карточку — лента подберёт встречные."
+          actionLabel="Открыть мою карточку"
+          onAction={() => router.push('/profile')}
+        />
+      ) : (
+        <View style={styles.list}>
+          {ordered.map((card) => {
+            const match = byId.get(card.id);
+            return (
+              <CardTile
+                key={card.id}
+                card={card}
+                matchCount={match ? match.theyGive.length + match.theyWant.length : 0}
+                mutual={match?.mutual ?? false}
+                onPress={() => router.push({ pathname: '/card/[id]', params: { id: card.id } })}
+              />
+            );
+          })}
+        </View>
+      )}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  filter: { flexDirection: 'row', marginBottom: SPACING.lg },
+  toggle: {
+    borderRadius: RADIUS.full,
+    borderWidth: 1,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+  },
+  list: { gap: SPACING.md },
+});

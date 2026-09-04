@@ -44,10 +44,6 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "build:guides": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tools/build-guides.ts",
-    "build:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tools/build-seed.ts",
-    "build:content": "npm run build:guides && npm run build:seed",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tools/build-guides.test.ts",
     "build:web": "expo export --platform web"
   },
   "private": true
