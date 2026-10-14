@@ -224,7 +224,11 @@ create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, pg_temp
+-- extensions в пути обязательно: digest() живёт в pgcrypto, а pgcrypto Supabase
+-- ставит в схему extensions, поэтому `create extension if not exists pgcrypto`
+-- выше ничего не создаёт и в public функции нет. Без этой схемы триггер падает,
+-- а вместе с ним — любая регистрация, включая анонимную.
+set search_path = public, extensions, pg_temp
 as $$
 begin
   insert into public.profiles (id, bucket)
